@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🐍 ماربازی کلاسیک</title>
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Variable.woff2" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; user-select: none; margin: 0; padding: 0; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a1a0a, #1a3a1a);
+    font-family: 'Vazirmatn', Tahoma, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    max-width: 600px;
+    width: 100%;
+    background: rgba(15, 31, 15, 0.95);
+    padding: 25px;
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 0 2px #3a5a3a;
+    border: 2px solid #4a6a4a;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #2a4a2a;
+  }
+  .logo {
+    color: #b3d9b3;
+    font-size: 20px;
+    font-weight: 700;
+    text-shadow: 0 0 15px #3a8a3a;
+  }
+  .logo span { color: #66ff66; }
+  .stats {
+    display: flex;
+    gap: 15px;
+    color: #8fbc8f;
+    font-size: 14px;
+  }
+  .stats div { background: #0a1a0a; padding: 4px 12px; border-radius: 10px; border: 1px solid #2a4a2a; }
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    background: #0a1a0a;
+    border: 2px solid #2a4a2a;
+    border-radius: 14px;
+    color: #8fbc8f;
+  }
+  .hud button {
+    background: #1a3a1a;
+    border: 2px solid #3a6a3a;
+    color: #b3d9b3;
+    padding: 6px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    transition: 0.2s;
+  }
+  .hud button:hover { background: #2a5a2a; }
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1/1;
+    background: #0f1f0f;
+    border: 4px solid #2a4a2a;
+    border-radius: 16px;
+    image-rendering: pixelated;
+  }
+  .nokia-pad {
+    display: grid;
+    grid-template-columns: 60px 60px 60px;
+    grid-template-rows: 60px 60px 60px;
+    gap: 6px;
+    background: #1a2a1a;
+    padding: 12px;
+    border-radius: 20px;
+    border: 3px solid #3a5a3a;
+    margin-top: 16px;
+    direction: ltr;
+    max-width: 210px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .nokia-btn {
+    background: #2a4a2a;
+    border: 2px solid #4a7a4a;
+    border-radius: 12px;
+    color: #b3d9b3;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #0a1a0a;
+    transition: 0.05s;
+  }
+  .nokia-btn:active { transform: translateY(4px); box-shadow: 0 0px 0 #0a1a0a; }
+  .btn-up { grid-column: 2; grid-row: 1; }
+  .btn-left { grid-column: 1; grid-row: 2; }
+  .btn-center { grid-column: 2; grid-row: 2; background: #1a3a1a; cursor: default; box-shadow: none; }
+  .btn-right { grid-column: 3; grid-row: 2; }
+  .btn-down { grid-column: 2; grid-row: 3; }
+  .btn-pause { grid-column: 1; grid-row: 3; background: #1a2a3a; border-color: #3a5a6a; font-size: 16px; }
+  .btn-restart { grid-column: 3; grid-row: 3; background: #3a1a1a; border-color: #6a3a3a; font-size: 16px; }
+  .share-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+    flex-wrap: wrap;
+  }
+  .share-btn {
+    background: #1a3a1a;
+    border: 2px solid #3a6a3a;
+    color: #b3d9b3;
+    padding: 8px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    text-decoration: none;
+    transition: 0.2s;
+  }
+  .share-btn:hover { background: #2a5a2a; }
+  .share-btn.telegram { background: #1a2a3a; border-color: #3a6a8a; }
+  .share-btn.whatsapp { background: #1a3a2a; border-color: #3a8a5a; }
+  .best-score {
+    text-align: center;
+    color: #b3d9b3;
+    font-size: 14px;
+    margin-top: 10px;
+    padding: 8px;
+    background: #0a1a0a;
+    border-radius: 12px;
+    border: 1px solid #2a4a2a;
+  }
+  .best-score span { color: #ffd700; font-weight: 700; }
+  .footer {
+    text-align: center;
+    color: #4a6a4a;
+    font-size: 12px;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #1a3a1a;
+  }
+  @media (max-width: 500px) {
+    .container { padding: 15px; }
+    .nokia-pad { grid-template-columns: 50px 50px 50px; grid-template-rows: 50px 50px 50px; gap: 5px; padding: 10px; }
+    .nokia-btn { font-size: 18px; }
+    .stats { font-size: 12px; gap: 8px; }
+    .logo { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="logo">🐍 <span>مار</span>بازی</div>
+    <div class="stats">
+      <div>👥 ۱۲۴</div>
+      <div>🏆 ۲۵۶</div>
+    </div>
+  </div>
+  
+  <div class="hud">
+    <div>🍎 <span id="score">0</span></div>
+    <button id="pauseBtn">⏸️ </button>
+  </div>
+  
+  <canvas id="c" width="320" height="320"></canvas>
+  
+  <div class="nokia-pad">
+    <div class="nokia-btn btn-up" data-dir="up">▲</div>
+    <div class="nokia-btn btn-left" data-dir="left">◀</div>
+    <div class="nokia-btn btn-center">●</div>
+    <div class="nokia-btn btn-right" data-dir="right">▶</div>
+    <div class="nokia-btn btn-down" data-dir="down">▼</div>
+    <div class="nokia-btn btn-pause" id="pauseBtn2">⏸</div>
+    <div class="nokia-btn btn-restart" id="restartBtn2">↻</div>
+  </div>
+  
+  <div class="best-score">
+    🏆 بهترین امتیاز: <span id="bestScore">۰</span>
+  </div>
+  
+  <div class="share-buttons">
+    <button class="share-btn whatsapp" onclick="shareWhatsapp()">💬 روبیکا سازنده</button>
+    <button class="share-btn" onclick="copyLink()">کپی لینک سایت</button>
+  </div>
+  
+  <div class="footer">
+ساخته شده با ♡ توسط TAX1-lac
+  </div>
+</div>
+
+<script>
+// ============================================================
+// 🐍 بازی مار - نسخه با ۱ تکه (مثل نوکیا)
+// ============================================================
+
+// ----- صدا -----
+const Sound = {
+  ctx: null,
+  init() {
+    if (!this.ctx) {
+      try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) {}
+    }
+  },
+  play(freq = 500, dur = 0.06) {
+    this.init();
+    if (!this.ctx) return;
+    try {
+      const o = this.ctx.createOscillator();
+      const g = this.ctx.createGain();
+      o.frequency.value = freq;
+      o.type = 'square';
+      o.connect(g);
+      g.connect(this.ctx.destination);
+      g.gain.value = 0.1;
+      o.start();
+      g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
+      o.stop(this.ctx.currentTime + dur);
+    } catch (_) {}
+  },
+  eat() { this.play(880, 0.07); },
+  move() { this.play(380, 0.02); },
+  hit() { this.play(140, 0.25); }
+};
+
+// ----- متغیرها -----
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const scoreSpan = document.getElementById('score');
+const bestSpan = document.getElementById('bestScore');
+const pauseBtn = document.getElementById('pauseBtn');
+const pauseBtn2 = document.getElementById('pauseBtn2');
+
+const COLS = 20, ROWS = 20;
+const SIZE = canvas.width / COLS;
+
+let snake, dir, nextDir, food, score, running, paused;
+let intervalId = null;
+let speedMs = 140;
+let bestScore = localStorage.getItem('snakeBest') || 0;
+bestSpan.textContent = bestScore;
+
+function rand(n) { return Math.floor(Math.random() * n); }
+
+// ----- توليد غذا -----
+function spawnFood() {
+  let pos;
+  let attempts = 0;
+  do {
+    pos = {x: rand(COLS), y: rand(ROWS)};
+    attempts++;
+  } while (snake.some(s => s.x === pos.x && s.y === pos.y) && attempts < 500);
+  food = pos;
+}
+
+// ===== ریستارت با ۱ تکه =====
+function resetGame() {
+  if (intervalId) { clearInterval(intervalId); intervalId = null; }
+  
+  // فقط ۱ تکه، بدون حرکت اولیه
+  snake = [{x: 10, y: 10}];
+  dir = {x: 0, y: 0};
+  nextDir = {x: 0, y: 0};
+  
+  score = 0;
+  scoreSpan.textContent = '0';
+  running = true;
+  paused = false;
+  pauseBtn.textContent = '⏸️ مکث';
+  pauseBtn2.textContent = '⏸';
+  speedMs = 140;
+  spawnFood();
+  draw();
+}
+
+// ----- رسم -----
+function draw() {
+  ctx.fillStyle = '#0f1f0f';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = 'rgba(40, 80, 40, 0.2)';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= COLS; i++) {
+    ctx.beginPath();
+    ctx.moveTo(i * SIZE, 0);
+    ctx.lineTo(i * SIZE, canvas.height);
+    ctx.stroke();
+  }
+  for (let i = 0; i <= ROWS; i++) {
+    ctx.beginPath();
+    ctx.moveTo(0, i * SIZE);
+    ctx.lineTo(canvas.width, i * SIZE);
+    ctx.stroke();
+  }
+
+  if (food) {
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = '#88ff88';
+    ctx.fillStyle = '#ff3b3b';
+    ctx.beginPath();
+    ctx.arc(food.x * SIZE + SIZE/2, food.y * SIZE + SIZE/2, SIZE/2.5, 0, Math.PI*2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  for (let i = 0; i < snake.length; i++) {
+    const s = snake[i];
+    const x = s.x * SIZE;
+    const y = s.y * SIZE;
+    const isHead = (i === snake.length - 1);
+    ctx.shadowBlur = isHead ? 15 : 0;
+    ctx.shadowColor = '#66dd66';
+    ctx.fillStyle = isHead ? '#66ff66' : '#338833';
+    ctx.fillRect(x + 2, y + 2, SIZE - 4, SIZE - 4);
+    ctx.shadowBlur = 0;
+  }
+}
+
+// ===== مرحله بازی =====
+function step() {
+  if (!running || paused) return;
+
+  // اگه جهت انتخاب نشده، حرکت نکن
+  if (nextDir.x === 0 && nextDir.y === 0) {
+    draw();
+    return;
+  }
+
+  if (nextDir.x !== -dir.x || nextDir.y !== -dir.y) {
+    dir = {x: nextDir.x, y: nextDir.y};
+  }
+
+  const head = snake[snake.length - 1];
+  let nx = head.x + dir.x;
+  let ny = head.y + dir.y;
+
+  // برخورد با دیوار
+  if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) {
+    running = false;
+    Sound.hit();
+    gameOver();
+    return;
+  }
+
+  // برخورد با خود (فقط اگه بیشتر از ۱ تکه باشه)
+  if (snake.length > 1 && snake.some(s => s.x === nx && s.y === ny)) {
+    running = false;
+    Sound.hit();
+    gameOver();
+    return;
+  }
+
+  snake.push({x: nx, y: ny});
+  
+  if (nx === food.x && ny === food.y) {
+    score += 10;
+    scoreSpan.textContent = score;
+    Sound.eat();
+    speedMs = Math.max(65, 140 - Math.floor(score / 25) * 6);
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = setInterval(step, speedMs);
+    }
+    spawnFood();
+  } else {
+    snake.shift();
+    Sound.move();
+  }
+  draw();
+}
+
+// ----- پایان بازی -----
+function gameOver() {
+  pauseBtn.textContent = 'game over!';
+  pauseBtn2.textContent = '💀';
+  if (intervalId) { clearInterval(intervalId); intervalId = null; }
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem('snakeBest', bestScore);
+    bestSpan.textContent = bestScore;
+  }
+  draw();
+}
+
+// ----- حلقه بازی -----
+function startLoop() {
+  if (intervalId) { clearInterval(intervalId); intervalId = null; }
+  intervalId = setInterval(step, speedMs);
+}
+
+// ----- کنترل جهت -----
+function setDirection(dx, dy) {
+  if (!running) return;
+  // اولین حرکت رو ثبت کن
+  if (dir.x === 0 && dir.y === 0) {
+    dir = {x: dx, y: dy};
+    nextDir = {x: dx, y: dy};
+    return;
+  }
+  if (dx !== -dir.x || dy !== -dir.y) {
+    nextDir = {x: dx, y: dy};
+  }
+}
+
+// ----- دکمه‌ها -----
+document.querySelectorAll('.nokia-btn[data-dir]').forEach(btn => {
+  const handler = (e) => {
+    e.preventDefault();
+    const d = btn.dataset.dir;
+    if (d === 'up') setDirection(0, -1);
+    if (d === 'down') setDirection(0, 1);
+    if (d === 'left') setDirection(-1, 0);
+    if (d === 'right') setDirection(1, 0);
+  };
+  btn.addEventListener('pointerdown', handler);
+  btn.addEventListener('touchstart', handler, {passive: false});
+});
+
+// ----- مکث -----
+function togglePause() {
+  if (!running) return;
+  paused = !paused;
+  pauseBtn.textContent = paused ? '▶️ ' : '⏸️ ';
+  pauseBtn2.textContent = paused ? '▶️' : '⏸';
+}
+
+pauseBtn.addEventListener('click', togglePause);
+pauseBtn2.addEventListener('click', togglePause);
+
+// ----- ریستارت -----
+document.getElementById('restartBtn2').addEventListener('click', () => {
+  resetGame();
+  startLoop();
+});
+
+// ----- کیبورد -----
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space') { e.preventDefault(); togglePause(); return; }
+  if (!running) return;
+  const key = e.key;
+  let dx = 0, dy = 0;
+  if (key === 'ArrowUp' || key === 'w' || key === 'W') { dx = 0; dy = -1; }
+  else if (key === 'ArrowDown' || key === 's' || key === 'S') { dx = 0; dy = 1; }
+  else if (key === 'ArrowLeft' || key === 'a' || key === 'A') { dx = -1; dy = 0; }
+  else if (key === 'ArrowRight' || key === 'd' || key === 'D') { dx = 1; dy = 0; }
+  else return;
+  e.preventDefault();
+  setDirection(dx, dy);
+});
+
+// ----- اشتراک‌گذاری -----
+function shareTelegram() {
+  const url = encodeURIComponent(window.location.href);
+  window.open(`https://t.me/share/url?url=${url}&text=🐍 بیا ماربازی بازی کنیم!`, '_blank');
+}
+function shareWhatsapp() {
+  window.open(`https://wa.me/?text=${encodeURIComponent(window.location.href)}`, '_blank');
+}
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    alert('✅ لینک کپی شد!');
+  });
+}
+
+// ----- شروع -----
+resetGame();
+startLoop();
+</script>
+</body>
+</html>
